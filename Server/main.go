@@ -1,20 +1,25 @@
 package main
 
 import (
-    "net/http"
-    "github.com/gin-gonic/gin"
-    "gorm.io/gorm"
-    // "gorm.io/driver/sqlite"
-    "github.com/go-passwd/validator"
-    "crypto/rsa"
-    "crypto/sha256"
-    "crypto"
-    "fmt"
-    "strconv"
-    "errors"
-    "math/big"
-    "encoding/base64"
-    "net/mail"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
+	// "gorm.io/driver/sqlite"
+	"crypto"
+	"crypto/rsa"
+	"crypto/sha256"
+    "crypto/x509"
+    // "crypto/elliptic"
+    "encoding/pem"
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"math/big"
+	"net/mail"
+
+	"github.com/go-passwd/validator"
 )
 
 // GORM Models
@@ -33,9 +38,8 @@ type SignupJson struct {
     Username string `json:"username"`
     Password string `json:"password"`
     Email string `json:"email"`
-    UserPublicKeyN big.Int `json:"user_public_key_N"`
-    UserPublicKeyE int `json:"user_public_key_E"`
-    SignatureBase64 string `json:"Signature"` // signatue of the json
+    UserPublicKeyPem string `json:"user_public_key_pem"`
+    SignatureBase64 string `json:"signature"` // signature of the json
 }
 
 // My functions
@@ -46,31 +50,63 @@ const USERNAME_MAX_LEN = 20
 const PASSWORD_MIN_LEN = 8
 const PASSWORD_MAX_LEN = 20
 
+func (user *SignupJson) getPublicKey() *rsa.PublicKey {
+	block, _ := pem.Decode([]byte(user.UserPublicKeyPem))
+    if block == nil {
+        fmt.Println("Invalid PEM Block")
+        return nil
+    }
+
+    key, err := x509.ParsePKIXPublicKey(block.Bytes)
+    if err != nil {
+        fmt.Println(err)
+        return nil
+    }
+
+    pubKey := key.(*rsa.PublicKey)
+
+    return pubKey
+}
+
 func (user *SignupJson) getSignatureBytes() []byte {
+
+    // if m := len(user.SignatureBase64) % 4; m != 0 {
+    //     user.SignatureBase64 += strings.Repeat("=", 4-m)
+    // }
+
     decodedSignature, err  := base64.StdEncoding.DecodeString(user.SignatureBase64)
+    // decodedSignature, err  := base64.URLEncoding.WithPadding(base64.NoPadding).DecodeString(user.SignatureBase64)
     if err == nil {
         return decodedSignature
     }
+    fmt.Println("Signature bytes error: ", err)
     return nil
 }
 
 func (user *SignupJson) getHash() []byte {
     h := sha256.New()
-    beforeHash := user.Username + user.Password + user.Email + user.UserPublicKeyN.String() + strconv.Itoa(user.UserPublicKeyE)
+    beforeHash := user.Username + user.Password + user.Email + user.UserPublicKeyPem
 
     h.Write([]byte(beforeHash))
     hash_data := h.Sum(nil)
+    fmt.Println("After hash: ", hash_data)
     return hash_data
 }
 
 func (user *SignupJson) verifySignature() bool {
-    publicKey := rsa.PublicKey{N:&user.UserPublicKeyN, E:user.UserPublicKeyE}
+    // publicKeyN := user.GetUserPublicKeyN()
+    publicKey := user.getPublicKey()
+    fmt.Println("Public key rsa: ", publicKey)
     hash_data := user.getHash()
     signature := user.getSignatureBytes()
+    fmt.Println("Signature: ", user.SignatureBase64)
+    fmt.Println("Signature bytes: ", signature)
     if signature == nil {
         return false
     }
-    err := rsa.VerifyPKCS1v15(&publicKey, crypto.SHA256, hash_data[:], signature)
+    
+    err := rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, hash_data, signature)
+    fmt.Println("Verify signature error: ", err)
     return err == nil
 }
 
@@ -108,7 +144,8 @@ func signup(c *gin.Context) {
 
 	if err := c.BindJSON(&newUser); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{
-          "error":  "Json is not valid",
+          // "error":  "Json is not valid",
+          "error":  err.Error(),
         })
 		return
 	}
