@@ -51,16 +51,23 @@ func signup(c *gin.Context) {
     
 }
 
+// Server code
+func login(c *gin.Context) {
+}
+
 func main() {
+    rand_init()
+
     db, err := gorm.Open(sqlite.Open("server.db"), &gorm.Config{})
     if err != nil {
         panic("failed to connect database")
     }
-
+    
     // Migrate the schema
     db.AutoMigrate(&UserModel{})
 
     router := gin.Default()
 	router.POST("/signup", signup)
+	router.POST("/login", login)
 	router.Run("localhost:8080")
 }
