@@ -1,9 +1,11 @@
 package com.example.shacharchatapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText mEmailField;
     private EditText mPasswordField;
     private EditText mConfirmPasswordField;
+    private TextView mSignUpTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class SignupActivity extends AppCompatActivity {
         mPasswordField = (EditText) findViewById(R.id.password_field);
         mConfirmPasswordField = (EditText) findViewById(R.id.confirm_password_field);
         Button signUpButton = (Button) findViewById(R.id.signup_button);
+        mSignUpTextView = findViewById(R.id.signup_textview);
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +41,15 @@ public class SignupActivity extends AppCompatActivity {
                 String confirmPassword = mConfirmPasswordField.getText().toString();
 
                 signUp(email, password, confirmPassword);
+            }
+        });
+
+        mSignUpTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
