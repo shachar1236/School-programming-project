@@ -1,47 +1,63 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/DarkModeBackground"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="@color/Primary"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/email_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:layout_margin="16dp"/>
+        android:textColorHint="@color/white" />
 
     <EditText
         android:id="@+id/password_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/email_field"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:hint="Password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:textColorHint="@color/white" />
 
     <TextView
         android:id="@+id/signup_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/password_field"
-        android:text="Don't have an account? Sign up"
-        android:textSize="14sp"
-        android:textColor="@color/cardview_dark_background"
         android:layout_marginTop="2dp"
         android:gravity="center"
+        android:text="Don't have an account? Sign up"
+        android:textColor="@color/Accent"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/signup_textview"
         android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="16dp"
         android:text="Login" />
 
-</RelativeLayout>
+</LinearLayout>

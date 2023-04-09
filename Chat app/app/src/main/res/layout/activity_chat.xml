@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1B2430"
+    android:background="@color/DarkModeBackground"
     tools:context=".ChatActivity"
     tools:ignore="MissingDefaultResource">
 
@@ -48,7 +48,7 @@
             android:layout_weight="0"
             android:background="@drawable/send_button_rounded"
             android:text="Send"
-            app:backgroundTint="#816797" />
+            app:backgroundTint="@color/Primary" />
 
 
     </LinearLayout>
