@@ -5,23 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1B2430"
-    tools:context=".ChatActivity">
+    tools:context=".ChatActivity"
+    tools:ignore="MissingDefaultResource">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_gchat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        >
+        tools:layout_editor_absoluteX="8dp">
 
         <!-- input field -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="4dp"
-            >
+            android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -35,11 +44,11 @@
             android:id="@+id/button"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:layout_weight="0"
             android:layout_margin="4dp"
+            android:layout_weight="0"
             android:background="@drawable/send_button_rounded"
-            app:backgroundTint="#816797"
-            android:text="Send" />
+            android:text="Send"
+            app:backgroundTint="#816797" />
 
 
     </LinearLayout>

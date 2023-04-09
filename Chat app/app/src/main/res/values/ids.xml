@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="text_gchat_user_other" type="id" />
+    <item name="text_gchat_timestamp_other" type="id" />
+    <item name="text_gchat_message_other" type="id" />
+    <item name="image_gchat_profile_other" type="id" />
+    <item name="text_gchat_message_me" type="id" />
+    <item name="text_gchat_timestamp_me" type="id" />
+</resources>

@@ -70,11 +70,11 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        if (!checkPasswordStrength(password)) {
-            Toast.makeText(getApplicationContext(), "Password is too weak, it must contain 1 letter, 1 digit " +
-                    "and 1 capital letter, the password length must be between 6-20.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (!checkPasswordStrength(password)) {
+//            Toast.makeText(getApplicationContext(), "Password is too weak, it must contain 1 letter, 1 digit " +
+//                    "and 1 capital letter, the password length must be between 6-20.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
