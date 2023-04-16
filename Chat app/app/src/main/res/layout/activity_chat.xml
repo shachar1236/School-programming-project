@@ -35,13 +35,14 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/message_input"
                 android:background="@drawable/text_input_field_rounded"
                 android:hint="Type something..." />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- input field button -->
         <Button
-            android:id="@+id/button"
+            android:id="@+id/send_button"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
