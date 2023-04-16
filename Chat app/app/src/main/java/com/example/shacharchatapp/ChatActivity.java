@@ -71,6 +71,20 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
+        // get all messages and add them to the list
+        db.collection(CHAT_COLLECTION_NAME).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<UserMessage> messages = ConvertToUserMessages(task.getResult());
+                for (UserMessage msg : messages) {
+                    if (!isMessageInsideList(msg.getId())) {
+                        addNewElement(msg);
+                    }
+                }
+            } else {
+                Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+        });
+
         // subscribing to changes
         Query query = db.collection(CHAT_COLLECTION_NAME);
         ListenerRegistration registration = query.addSnapshotListener(
