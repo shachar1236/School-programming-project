@@ -26,6 +26,7 @@
         tools:layout_editor_absoluteX="8dp">
 
         <!-- input field -->
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,5 +54,22 @@
 
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="60dp"
+        android:layout_height="58dp"
+        android:layout_margin="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:alpha="0.5"
+        android:background="@drawable/button_rounded_faded"
+        android:text="Logout"
+        android:textSize="10dp"
+        app:backgroundTint="@color/Primary"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_gchat"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_gchat"
+        app:layout_constraintTop_toTopOf="@+id/recycler_gchat"
+        app:layout_constraintVertical_bias="0.026" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

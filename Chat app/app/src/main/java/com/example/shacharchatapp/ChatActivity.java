@@ -1,5 +1,6 @@
 package com.example.shacharchatapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,6 +68,19 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SendMessage(msg_input.getText().toString());
                 msg_input.getText().clear();
+            }
+        });
+
+        // setting logout button
+        Button logoutButton = findViewById(R.id.logout_button);
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                Intent intent = new Intent(ChatActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
