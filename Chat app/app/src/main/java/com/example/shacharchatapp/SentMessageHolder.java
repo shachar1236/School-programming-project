@@ -6,19 +6,26 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+    TextView messageText, timeText;
 
-        SentMessageHolder(View itemView) {
-            super(itemView);
+    SentMessageHolder(View itemView) {
+        super(itemView);
 
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
-        }
-
-        void bind(UserMessage message) {
-            messageText.setText(message.getMessage());
-
-            // Format the stored timestamp into a readable String using method.
-            timeText.setText(message.getCreatedAt());
-        }
+        // Initialize the TextViews
+        messageText = itemView.findViewById(R.id.text_message_body);
+        timeText = itemView.findViewById(R.id.text_message_time);
     }
+
+    /**
+     * Binds the message data to the ViewHolder.
+     *
+     * @param message The UserMessage object containing the message data.
+     */
+    void bind(UserMessage message) {
+        // Set the message text
+        messageText.setText(message.getMessage());
+
+        // Set the timestamp text
+        timeText.setText(message.getCreatedAt());
+    }
+}
