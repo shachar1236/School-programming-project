@@ -28,40 +28,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The activity responsible for handling the chat functionality.
+ */
 public class ChatActivity extends AppCompatActivity {
 
-    final String CHAT_COLLECTION_NAME = "chat";
-
-
+    private final String CHAT_COLLECTION_NAME = "chat";
     private RecyclerView mMessageRecycler;
     private MessageListAdapter mMessageAdapter;
     private List<UserMessage> msgList;
-
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-
     private final String TAG = "chat_activity";
 
+    /**
+     * Called when the activity is starting. This is where most initialization should go.
+     *
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        mMessageRecycler = (RecyclerView) findViewById(R.id.recycler_gchat);
+        // Initialize RecyclerView and adapter
+        mMessageRecycler = findViewById(R.id.recycler_gchat);
         List<UserMessage> messageList = new ArrayList<>();
         mMessageAdapter = new MessageListAdapter(this, messageList);
         msgList = messageList;
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
         mMessageRecycler.setAdapter(mMessageAdapter);
 
-        // getting firebase
+        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // send input
+        // Send message input
         TextInputEditText msg_input = findViewById(R.id.message_input);
 
-        // setting send button action
+        // Set send button action
         Button sendButton = findViewById(R.id.send_button);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,9 +76,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // setting logout button
+        // Set logout button
         Button logoutButton = findViewById(R.id.logout_button);
-
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,8 +88,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-
-        // get all messages and add them to the list
+        // Retrieve all messages and add them to the list
         db.collection(CHAT_COLLECTION_NAME).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<UserMessage> messages = ConvertToUserMessages(task.getResult());
@@ -99,7 +102,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        // subscribing to changes
+        // Subscribe to changes in the chat collection
         Query query = db.collection(CHAT_COLLECTION_NAME);
         ListenerRegistration registration = query.addSnapshotListener(
                 new EventListener<QuerySnapshot>() {
@@ -130,25 +133,36 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Converts a QuerySnapshot to a list of UserMessages.
+     *
+     * @param snapshot The QuerySnapshot to convert.
+     * @return The list of UserMessages.
+     */
     private List<UserMessage> ConvertToUserMessages(QuerySnapshot snapshot) {
         List<UserMessage> l = new ArrayList<>();
 
         for (QueryDocumentSnapshot doc : snapshot) {
             String id = doc.getId();
-            String sender_uid = (String)doc.get("sender_uid");
-            String sender_name = (String)doc.get("sender_name");
-            Timestamp created_at = (Timestamp)doc.get("created_at");
-            String text = (String)doc.get("text");
+            String sender_uid = (String) doc.get("sender_uid");
+            String sender_name = (String) doc.get("sender_name");
+            Timestamp created_at = (Timestamp) doc.get("created_at");
+            String text = (String) doc.get("text");
 
             String created_at_str = created_at.toDate().toString();
 
-            UserMessage msg = new UserMessage(id, sender_uid ==  mAuth.getUid(), sender_name, text, created_at_str);
+            UserMessage msg = new UserMessage(id, sender_uid.equals(mAuth.getUid()), sender_name, text, created_at_str);
             l.add(msg);
         }
 
         return l;
     }
 
+    /**
+     * Sends a message to the chat collection in Firestore.
+     *
+     * @param data The message text to send.
+     */
     private void SendMessage(String data) {
         Map<String, Object> message = new HashMap<>();
         message.put("sender_uid", mAuth.getCurrentUser().getUid());
@@ -159,11 +173,22 @@ public class ChatActivity extends AppCompatActivity {
         db.collection(CHAT_COLLECTION_NAME).add(message);
     }
 
+    /**
+     * Adds a new message element to the list.
+     *
+     * @param msg The UserMessage to add.
+     */
     private void addNewElement(UserMessage msg) {
         msgList.add(msg);
         mMessageAdapter.notifyItemInserted(msgList.size() - 1);
     }
 
+    /**
+     * Checks if a message with the given id is already in the list.
+     *
+     * @param id The id of the message to check.
+     * @return true if the message is already in the list, false otherwise.
+     */
     private boolean isMessageInsideList(String id) {
         for (UserMessage msg : msgList) {
             if (msg.getId().equals(id)) {

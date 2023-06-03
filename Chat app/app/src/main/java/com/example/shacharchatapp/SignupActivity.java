@@ -26,13 +26,17 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Initialize Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
-        mEmailField = (EditText) findViewById(R.id.email_field);
-        mPasswordField = (EditText) findViewById(R.id.password_field);
-        mConfirmPasswordField = (EditText) findViewById(R.id.confirm_password_field);
-        Button signUpButton = (Button) findViewById(R.id.signup_button);
+
+        // Get references to UI elements
+        mEmailField = findViewById(R.id.email_field);
+        mPasswordField = findViewById(R.id.password_field);
+        mConfirmPasswordField = findViewById(R.id.confirm_password_field);
+        Button signUpButton = findViewById(R.id.signup_button);
         mSignUpTextView = findViewById(R.id.signup_textview);
 
+        // Set click listener for sign up button
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,9 +48,11 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        // Set click listener for "Already have an account?" text view
         mSignUpTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Navigate to the login activity
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -54,11 +60,24 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Checks if the given password meets the required strength criteria.
+     *
+     * @param pass  The password to be checked.
+     * @return      True if the password meets the criteria, false otherwise.
+     */
     private Boolean checkPasswordStrength(String pass) {
         String regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20}$";
         return pass.matches(regexp);
     }
 
+    /**
+     * Attempts to sign up the user with the provided email and password.
+     *
+     * @param email             The user's email address.
+     * @param password          The user's password.
+     * @param confirmPassword  The confirmation of the user's password.
+     */
     private void signUp(String email, String password, String confirmPassword) {
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -70,22 +89,26 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-//        if (!checkPasswordStrength(password)) {
-//            Toast.makeText(getApplicationContext(), "Password is too weak, it must contain 1 letter, 1 digit " +
-//                    "and 1 capital letter, the password length must be between 6-20.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+        /*
+        if (!checkPasswordStrength(password)) {
+            Toast.makeText(getApplicationContext(), "Password is too weak, it must contain 1 letter, 1 digit " +
+                    "and 1 capital letter, the password length must be between 6-20.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        */
 
+        // Attempt to create a new user with email and password
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        // Sign up successful
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
-                        // Add code here to redirect the user to the main screen or do any other necessary tasks
+                        // Add code here to redirect the user to the main screen or perform any other necessary tasks
                     } else {
+                        // Sign up failed
                         Toast.makeText(getApplicationContext(), "Sign up failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
 }
